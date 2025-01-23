@@ -1,0 +1,38 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.loginContainer .loginForm {
+  width: 361px;
+  height: 490px;
+  background-color: cadetblue;
+}
+
+.loginContainer {
+  height: 100vh;
+}
+.loginContainer .loginForm .loginInput {
+  width: 300px;
+  height: 45px;
+  padding-left: 45px;
+  outline: none;
+}
+.iconContainer {
+  background-color: rgb(190, 188, 188);
+  top: 45px;
+  width: 40px;
+  height: 45px; 
+}
+.loginContainer .loginForm .loginButton {
+  width: 312px;
+  height: 45px;
+  background-color: rgb(128, 184, 186);
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+.loginContainer .loginForm .loginButton:hover {
+  background-color: white;
+  color: cadetblue;
+}

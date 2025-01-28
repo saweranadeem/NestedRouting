@@ -1,0 +1,20 @@
+.sidebarCotainer{
+    width: 250px;
+    background-color: cadetblue;
+}
+.sidebarCotainer .sidebarbutton{
+    width: 250px;
+    height: 45px;
+    background-color: rgb(136, 203, 206);
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+.sidebarCotainer .active-link {
+    text-decoration: none;
+    color: white;
+    background-color: rgb(48, 125, 127);
+    padding: 10px; 
+    border-radius:5px; 
+  }
+  

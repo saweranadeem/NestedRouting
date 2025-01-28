@@ -3,8 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../auth/Login";
 import ForgotPassword from "../auth/ForgotPassword";
 import { AuthContext } from "../context/AuthContext";
-import Dashboard from "../commonComponents/Dashboard";
-
+import Home from "../pages/Home";
+import Dashboard from "../pages/Dashboard"
 const PublicPrivateRouting = () => {
   const { isLogin } = useContext(AuthContext); // Fixed the case
 
@@ -13,7 +13,7 @@ const PublicPrivateRouting = () => {
     return isLogin ? children : <Navigate to="/login" />; // Redirect to login if not logged in
   };
   const PublicRoute = ({ children }) => {
-    return !isLogin ? children : <Navigate to="/dashboard" />;
+    return !isLogin ? children : <Navigate to="/home" />;
   };
 
   return (
@@ -41,13 +41,15 @@ const PublicPrivateRouting = () => {
 
         {/* Protecting the Dashboard route */}
         <Route
-          path="/dashboard"
+          path="/home"
           element={
             <PrivateRoute>
-              <Dashboard />
+              <Home />
             </PrivateRoute>
           }
-        />
+        >
+          <Route index element={<Dashboard />} />
+        </Route>
       </Routes>
     </div>
   );

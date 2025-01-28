@@ -34,7 +34,7 @@ const Login = () => {
         const response = await loginMutation(values).unwrap();
         // Assuming the response contains an auth token
         login(response.token);
-        navigate('/dashboard'); // Redirect to the dashboard or another page
+        navigate('/sidebar'); // Redirect to the dashboard or another page
       } catch (err) {
         console.error('Login failed:', err);
         // Handle error (e.g., display error message to the user)

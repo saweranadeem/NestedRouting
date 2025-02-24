@@ -1,96 +1,121 @@
-import React, { useContext } from 'react';
-import './CommonStyling.css';
-import { Email, Lock } from '@mui/icons-material';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { useLoginMutation } from '../services/AuthApi';
-
+import React, { useContext, useState } from "react";
+import "./CommonStyling.css";
+import { Email, Lock } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
+import logoImage from "../assets/whiteLogo.png";
+import axios from "axios";
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState({}); // ✅ Correct error state
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [loginMutation, { isLoading, error }] = useLoginMutation();
 
   const goToForgotPage = () => {
-    navigate('/forgotPassword');
+    navigate("/forgotPassword");
   };
 
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    validationSchema: Yup.object().shape({
-      email: Yup.string()
-        .email('Invalid Email Address')
-        .required('Email is required.'),
-      password: Yup.string()
-        .min(6, 'Password must be at least 6 characters')
-        .required('Password is required.'),
-    }),
-    onSubmit: async (values) => {
-      try {
-        const response = await loginMutation(values).unwrap();
-        // Assuming the response contains an auth token
-        login(response.token);
-        navigate('/sidebar'); // Redirect to the dashboard or another page
-      } catch (err) {
-        console.error('Login failed:', err);
-        // Handle error (e.g., display error message to the user)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let errors = {};
+
+    if (!email) {
+      errors.email = "Email is required";
+    } else if (email.length < 7) {
+      errors.email = "Email must be at least 7 characters long";
+    }
+
+    if (!password) {
+      errors.password = "Password is required";
+    } else if (password.length < 8) {
+      errors.password = "Password must be at least 8 characters long";
+    }
+
+    setError(errors);
+
+    if (Object.keys(errors).length > 0) {
+      Object.values(errors).forEach((errormsg) => {
+        toast.error(errormsg);
+      });
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "https://api.myswitchin.com/api/admin/login",
+        {
+          email,
+          password,
+        }
+      );
+      if (response.data?.token) {
+        login(response.data.token);
+        toast.success("Login Successfully");
+        navigate("/home");
       }
-    },
-  });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Invalid credentials or server issue";
+      toast.error(errorMessage);
+    }
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center loginContainer">
       <form
-        onSubmit={formik.handleSubmit}
-        className="d-flex justify-content-center align-items-center flex-column loginForm rounded"
+        className="d-flex align-items-center flex-column loginForm rounded"
+        onSubmit={handleSubmit} // ✅ Use onSubmit instead of button click
       >
+        <div className="position-relative imageContainer">
+          <img
+            src={logoImage}
+            height={150}
+            width={150}
+            className="position-absolute logoImage"
+            alt="Logo"
+          />
+        </div>
+
         {/* Email Field */}
         <div>
-          <div className="iconContainer position-relative d-flex justify-content-center align-items-center">
-            <Email />
+          <div className="position-relative">
+            <div className="position-absolute iconContainer">
+              <Email className="icon position-absolute" />
+            </div>
+            <input
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              className="loginInput border-0"
+            />
           </div>
-          <input
-            type="email"
-            name="email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            placeholder="Email"
-            className="loginInput border-0"
-          />
-          {formik.errors.email && formik.touched.email && (
-            <p className="text-danger">{formik.errors.email}</p>
-          )}
         </div>
 
         {/* Password Field */}
         <div>
-          <div className="iconContainer position-relative d-flex justify-content-center align-items-center">
-            <Lock />
+          <div className="position-relative">
+            <div className="position-absolute iconContainer">
+              <Lock className="icon position-absolute" />
+            </div>
+            <input
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="*******"
+              className="loginInput border-0"
+            />
           </div>
-          <input
-            type="password"
-            name="password"
-            placeholder="*******"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="loginInput border-0"
-          />
-          {formik.errors.password && formik.touched.password && (
-            <p className="text-danger">{formik.errors.password}</p>
-          )}
         </div>
 
         {/* Forgot Password */}
-        <div>
+        <div className="textContainer">
           <p
-            className="text-white fs-5"
-            style={{ cursor: 'pointer' }}
+            className="text-white fs-5 text-end mt-2"
+            style={{ cursor: "pointer" }}
             onClick={goToForgotPage}
           >
             Forgot Password?
@@ -99,20 +124,13 @@ const Login = () => {
 
         {/* Submit Button */}
         <button
-          type="submit"
+          type="submit" // ✅ Change type to "submit"
           className="loginButton border-0 rounded-5"
-          disabled={isLoading}
         >
-          {isLoading ? 'Signing In...' : 'SIGN IN'}
+          Sign In
         </button>
-
-        {/* Error Message */}
-        {error && (
-          <p className="text-danger mt-3">
-            {error.data?.message || 'Login failed. Please try again.'}
-          </p>
-        )}
       </form>
+      <ToastContainer />
     </div>
   );
 };

@@ -1,5 +1,25 @@
-.DashboardContainer .Boxs {
-  height: 200px;
-  width: 200px;
-  background-color: cadetblue;
+
+.dashoboardContainer h3{
+  color: rgb(29, 105, 108);
+}
+ .dashoboardContainer .dashboardBox{
+
+  border: 0;
+  border-radius: 12px;
+  height: 9vw;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+ color: white;
+  margin-top: 20px;
+  cursor: pointer;
+  background-color: cadetblue;       ;
+
+}
+.dashoboardContainer .circle{
+  width: 65px;height: 65px;
+  background-color: white;
+  border-radius: 50%;
+
 }

@@ -14,17 +14,32 @@
 .loginContainer {
   height: 100vh;
 }
+.loginContainer .imageContainer{
+  width: 100%;
+  height: 200px;
+}
+.loginContainer .logoImage{
+left: 100px;
+top:20px;
+}
 .loginContainer .loginForm .loginInput {
   width: 300px;
   height: 45px;
   padding-left: 45px;
   outline: none;
+  margin-top: 18px;
 }
-.iconContainer {
+ .loginContainer .iconContainer {
   background-color: rgb(190, 188, 188);
-  top: 45px;
   width: 40px;
   height: 45px; 
+  top:18px
+ 
+}
+.loginContainer .iconContainer .icon{
+  top: 50%;
+left: 50%;
+transform: translate(-50%,-50%);
 }
 .loginContainer .loginForm .loginButton {
   width: 312px;
@@ -37,4 +52,7 @@
 .loginContainer .loginForm .loginButton:hover {
   background-color: white;
   color: cadetblue;
+}
+.loginContainer .textContainer{
+  width: 300px;
 }

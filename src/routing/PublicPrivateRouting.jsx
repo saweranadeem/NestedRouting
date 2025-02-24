@@ -4,7 +4,10 @@ import Login from "../auth/Login";
 import ForgotPassword from "../auth/ForgotPassword";
 import { AuthContext } from "../context/AuthContext";
 import Home from "../pages/Home";
-import Dashboard from "../pages/Dashboard"
+import CreateUser from "../pages/CreateUser";
+import UpdateUser from "../pages/UpdateUser";
+import Dashboard from "../pages/Dashboard";
+import Promotions from "../pages/Promotions";
 const PublicPrivateRouting = () => {
   const { isLogin } = useContext(AuthContext); // Fixed the case
 
@@ -49,6 +52,9 @@ const PublicPrivateRouting = () => {
           }
         >
           <Route index element={<Dashboard />} />
+          <Route path="/home/promotions" element={<Promotions />} />
+          <Route path="/home/createUser" element={<CreateUser />} />
+          <Route path="/home/updateUser" element={<UpdateUser />} />
         </Route>
       </Routes>
     </div>

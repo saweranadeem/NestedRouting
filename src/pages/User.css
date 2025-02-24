@@ -1,0 +1,46 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.table .notesIcon {
+  color: rgb(103, 150, 239);
+}
+.table .deleteIcon {
+  color: #e84c49;
+}
+.tableDiv .tableButton {
+  padding: 15px 25px;
+  border: 0;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: bold;
+
+  margin: 50px 0 10px 190px;
+  background-color: rgb(120, 186, 189);
+  color: white;
+}
+.table .tableHeader th {
+  padding: 48px 15px;
+  color: white;
+  background-color: cadetblue;
+  font-size: 19.54px;
+  border-bottom: none;
+  text-align: center;
+}
+.tableDiv .tableContainter {
+  width: 80%;
+  margin: 0 auto;
+  background-color: rgb(238, 232, 232);
+}
+.tableDiv {
+  height: 100vh;
+}
+.table td {
+  border-bottom: 0;
+  padding: 48px 30px;
+  font-size: 19.54px;
+  color: #2e2b61;
+  font-family: Cer_pro_medium;
+  text-align: center;
+}

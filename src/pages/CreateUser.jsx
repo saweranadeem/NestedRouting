@@ -1,101 +1,68 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import React, { useEffect, useState } from "react";
 import "./FormStyling.css"; // Importing the CSS file
-
-const validationSchema = Yup.object({
-  name: Yup.string()
-    .min(3, "Name must be at least 3 characters")
-    .required("Name is required"),
-  email: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
-  contactNumber: Yup.string()
-    .matches(/^[0-9]{10,15}$/, "Contact number must be 10-15 digits")
-    .required("Contact number is required"),
-  nationality: Yup.string().required("Nationality is required"),
-  age: Yup.number()
-    .min(18, "You must be at least 18 years old")
-    .max(60, "Age must be below 60")
-    .required("Age is required"),
-});
-
+import { createApi } from "../services/apiService";
+import { skeletonClasses } from "@mui/material";
+import Loader from "../auth/Loader";
 const CreateUser = () => {
+  const [name, setName] = useState("");
+  const [link, setLink] = useState("");
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await createApi("/admin/add-promotion");
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error("Error in fetching api", error);
+    }
+  };
+
   return (
     <div className="form-wrapper container">
-      <Formik
-        initialValues={{
-          name: "",
-          email: "",
-          contactNumber: "",
-          nationality: "",
-          age: "",
-        }}
-        validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log("Form submitted with values:", values);
-        }}
-      >
-        {() => (
-          <Form className="form-container">
-            <h2>User Form</h2>
+      {loading && <Loader />}
+      <form className="form-container" onSubmit={handleSubmit}>
+        <h2>Create Promotions</h2>
+        <div className="form-group">
+          <label>Title</label>
+          <input
+            type="text"
+            name="title"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="input-field"
+          />
+        </div>
+        <div className="form-group">
+          <label>Link</label>
+          <input
+            type="text"
+            name="link"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            className="input-field"
+          />
+        </div>
+        <div className="form-group">
+          <label>Image</label>
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.value)}
+            value={image}
+            className="input-field"
+          />
+        </div>
 
-            <div className="form-group">
-              <label>Name:</label>
-              <Field type="text" name="name" className="input-field" />
-              <ErrorMessage
-                name="name"
-                component="div"
-                className="error-message"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Email:</label>
-              <Field type="email" name="email" className="input-field" />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="error-message"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Contact Number:</label>
-              <Field type="text" name="contactNumber" className="input-field" />
-              <ErrorMessage
-                name="contactNumber"
-                component="div"
-                className="error-message"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Nationality:</label>
-              <Field type="text" name="nationality" className="input-field" />
-              <ErrorMessage
-                name="nationality"
-                component="div"
-                className="error-message"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Age:</label>
-              <Field type="number" name="age" className="input-field" />
-              <ErrorMessage
-                name="age"
-                component="div"
-                className="error-message"
-              />
-            </div>
-
-            <button type="submit" className="submit-button">
-              Submit
-            </button>
-          </Form>
-        )}
-      </Formik>
+        <button type="submit" className="submit-button">
+          Submit
+        </button>
+      </form>
     </div>
   );
 };

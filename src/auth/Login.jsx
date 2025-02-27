@@ -6,13 +6,15 @@ import { AuthContext } from "../context/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import logoImage from "../assets/whiteLogo.png";
 import axios from "axios";
+import Loader from "./Loader";
+import "./Loader.css";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState({}); // ✅ Correct error state
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const goToForgotPage = () => {
     navigate("/forgotPassword");
   };
@@ -41,6 +43,7 @@ const Login = () => {
       });
       return;
     }
+    setLoading(true);
     try {
       const response = await axios.post(
         "https://api.myswitchin.com/api/admin/login",
@@ -54,7 +57,9 @@ const Login = () => {
         toast.success("Login Successfully");
         navigate("/home");
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       const errorMessage =
         error.response?.data?.message || "Invalid credentials or server issue";
       toast.error(errorMessage);
@@ -63,6 +68,7 @@ const Login = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center loginContainer">
+      {loading && <Loader />}
       <form
         className="d-flex align-items-center flex-column loginForm rounded"
         onSubmit={handleSubmit} // ✅ Use onSubmit instead of button click

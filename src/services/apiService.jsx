@@ -19,25 +19,17 @@ export const getApi = async (endpoint) => {
     throw error; // ✅ Handle errors properly
   }
 };
-export const createApi = async (endpoint) => {
+export const createApi = async (endpoint, data) => {
   try {
-    const res = await axios.post(
-      `${BASEURL}${endpoint}`,
-      {
-        title,
-        link,
-        image,
+    const res = await axios.post(`${BASEURL}${endpoint}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    });
     return res.data;
   } catch (error) {
     console.error("Error in fetching API", error);
-    throw new Error("Error occurred while creating promotion.");
+    // throw new Error("Error occurred while creating promotion.");
   }
 };

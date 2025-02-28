@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./FormStyling.css"; // Importing the CSS file
 import { createApi } from "../services/apiService";
-import { skeletonClasses } from "@mui/material";
 import Loader from "../auth/Loader";
 const CreateUser = () => {
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState();
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await createApi("/admin/add-promotion");
+      await createApi("/admin/add-promotion", { title, link, image });
 
       setLoading(false);
     } catch (error) {
@@ -32,8 +31,8 @@ const CreateUser = () => {
           <input
             type="text"
             name="title"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             className="input-field"
           />
         </div>
@@ -53,8 +52,7 @@ const CreateUser = () => {
             type="file"
             name="image"
             accept="image/*"
-            onChange={(e) => setImage(e.target.value)}
-            value={image}
+            onChange={(e) => setImage(e.target.files[0])}
             className="input-field"
           />
         </div>

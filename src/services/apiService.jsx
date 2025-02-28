@@ -24,7 +24,7 @@ export const createApi = async (endpoint, data) => {
     const res = await axios.post(`${BASEURL}${endpoint}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
     return res.data;

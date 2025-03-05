@@ -1,103 +1,98 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import React, { useState } from "react";
 import "./FormStyling.css"; // Importing the CSS file
+import { createApi } from "../services/apiService";
+import Loader from "../auth/Loader";
+import { useLocation } from "react-router-dom";
 
-const validationSchema = Yup.object({
-  name: Yup.string()
-    .min(3, "Name must be at least 3 characters")
-    .required("Name is required"),
-  email: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
-  contactNumber: Yup.string()
-    .matches(/^[0-9]{10,15}$/, "Contact number must be 10-15 digits")
-    .required("Contact number is required"),
-  nationality: Yup.string().required("Nationality is required"),
-  age: Yup.number()
-    .min(18, "You must be at least 18 years old")
-    .max(60, "Age must be below 60")
-    .required("Age is required"),
-});
+const CreateUser = () => {
+  const location = useLocation();
+  const { user } = location.state || {}; // ✅ Prevents crash if no user data
 
-const UpdateUser = () => {
+  // ✅ Initialize state with user data
+  const [title, setTitle] = useState(user?.title || "");
+  const [link, setLink] = useState(user?.link || "");
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Handle Form Submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("link", link);
+      if (image) {
+        formData.append("image", image); // ✅ Only add if user selects new image
+      }
+
+      await createApi(`/admin/update-promotion/${user.id}`, formData);
+
+      setLoading(false);
+      alert("Promotion updated successfully!");
+    } catch (error) {
+      setLoading(false);
+      console.error("Error updating promotion:", error);
+    }
+  };
+
   return (
     <div className="form-wrapper container">
-      <Formik
-        initialValues={{
-          name: "",
-          email: "",
-          contactNumber: "",
-          nationality: "",
-          age: "",
-        }}
-        validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log("Form submitted with values:", values);
-        }}
-      >
-        {() => (
-          <Form className="form-container">
-            <h2>User Form</h2>
+      {loading && <Loader />}
+      <form className="form-container" onSubmit={handleSubmit}>
+        <h2>Update Promotions</h2>
 
-            <div className="form-group">
-              <label>Name:</label>
-              <Field type="text" name="name" className="input-field" />
-              <ErrorMessage
-                name="name"
-                component="div"
-                className="error-message"
-              />
+        <div className="form-group">
+          <label>Title</label>
+          <input
+            type="text"
+            name="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="input-field"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Link</label>
+          <input
+            type="text"
+            name="link"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            className="input-field"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Image</label>
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            className="input-field"
+          />
+          {user?.image && !image && (
+            <div>
+              <p>Current Image:</p>
+              <img src={user.image} alt="Current" width={100} />
             </div>
-
-            <div className="form-group">
-              <label>Email:</label>
-              <Field type="email" name="email" className="input-field" />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="error-message"
-              />
+          )}
+          {image && (
+            <div>
+              <p>New Image Preview:</p>
+              <img src={URL.createObjectURL(image)} alt="New" width={100} />
             </div>
+          )}
+        </div>
 
-            <div className="form-group">
-              <label>Contact Number:</label>
-              <Field type="text" name="contactNumber" className="input-field" />
-              <ErrorMessage
-                name="contactNumber"
-                component="div"
-                className="error-message"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Nationality:</label>
-              <Field type="text" name="nationality" className="input-field" />
-              <ErrorMessage
-                name="nationality"
-                component="div"
-                className="error-message"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Age:</label>
-              <Field type="number" name="age" className="input-field" />
-              <ErrorMessage
-                name="age"
-                component="div"
-                className="error-message"
-              />
-            </div>
-
-            <button type="submit" className="submit-button">
-              Submit
-            </button>
-          </Form>
-        )}
-      </Formik>
+        <button type="submit" className="submit-button">
+          Submit
+        </button>
+      </form>
     </div>
   );
 };
 
-export default UpdateUser;
+export default CreateUser;
